@@ -1,0 +1,11 @@
+{
+  "name": "User Sync PWA",
+  "short_name": "SyncPWA",
+  "theme_color": "#111827",
+  "background_color": "#111827",
+  "display": "standalone",
+  "start_url": "/",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
