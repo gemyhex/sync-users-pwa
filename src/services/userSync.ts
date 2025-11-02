@@ -38,10 +38,6 @@ export class UserSyncService {
     });
   }
 
-  hasDataArray(x: unknown): x is { data: any[] } {
-    return !!x && typeof x === 'object' && Array.isArray((x as any).data);
-  }
-
   async getAllCachedUsers() {
     const db = await this.dbPromise;
     return db.getAll(STORE_NAME);
@@ -70,12 +66,13 @@ export class UserSyncService {
     try {
       let page = 1;
 
+      type UsersResult = any[] | ApiResponse<any[]>;
       while (page <= MAX_PAGES && allUsers.length < MAX_RECORDS) {
         const endpoint = `/users?page=${page}&size=${PAGE_SIZE}`;
-        const response = apiClient.getDecrypted<ApiResponse<any[]>>(endpoint);
-        const usersPage = Array.isArray(response)
-          ? response
-          : (this.hasDataArray(response) ? response.data : []);
+        const result = await apiClient.getDecrypted<UsersResult>(endpoint);
+        const usersPage = Array.isArray(result)
+          ? result
+          : result?.data || [];
 
         if (!usersPage.length) break;
 

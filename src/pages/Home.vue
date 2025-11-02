@@ -52,6 +52,12 @@
                 scope="col"
                 class="py-3 px-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-200"
               >
+                Username
+              </th>
+              <th
+                scope="col"
+                class="py-3 px-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-200"
+              >
                 First Name
               </th>
               <th
@@ -83,6 +89,9 @@
                 class="whitespace-nowrap py-4 px-4 text-sm font-medium text-white"
               >
                 {{ user?.id }}
+              </td>
+              <td class="whitespace-nowrap py-4 px-4 text-sm text-slate-300">
+                {{ user?.username }}
               </td>
               <td class="whitespace-nowrap py-4 px-4 text-sm text-slate-300">
                 {{ user?.firstName }}
