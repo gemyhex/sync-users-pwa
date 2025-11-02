@@ -1,5 +1,9 @@
-// src/api/apiClient.ts
 import axios, { AxiosInstance } from 'axios';
+
+export interface ApiResponse<T> {
+  data: T;
+  meta?: Record<string, unknown>;
+}
 
 function base64ToBytes(base64: string): Uint8Array {
   const binary = atob(base64);
@@ -8,31 +12,22 @@ function base64ToBytes(base64: string): Uint8Array {
   return bytes;
 }
 
-async function importAesKeyFromD(d: string): Promise<CryptoKey> {
-  const decodedBytes = base64ToBytes(d);
-  // keep slice length 32 if you expect AES-256 key, or 16 for AES-128.
-  // we won't use this helper in the main decrypt path below (kept for compatibility)
-  const keyBytes = decodedBytes.slice(0, 32);
-  return crypto.subtle.importKey('raw', keyBytes.buffer, { name: 'AES-GCM' }, false, ['decrypt']);
-}
-
 export async function decryptEnvelope(envelope: { d: string; t: string; n: string }): Promise<any> {
   const decodedD = base64ToBytes(envelope.d); // Uint8Array
   const ivBytes = base64ToBytes(envelope.n);   // Uint8Array
   const tagBytes = base64ToBytes(envelope.t);  // Uint8Array
 
-  // 1) first 16 bytes = AES-128 key (use 32 for AES-256 if server uses that)
+  // first 16 bytes = AES-128 key (use 32 for AES-256 if server uses that)
   const keyBytes = decodedD.slice(0, 16); // Uint8Array
 
-  // 2) rest of d = ciphertext body
+  // rest of d = ciphertext body
   const ciphertextBody = decodedD.slice(16); // Uint8Array
 
-  // 3) append tag to ciphertext (GCM expects tag appended at end)
+  // append tag to ciphertext (GCM expects tag appended at end)
   const fullCiphertext = new Uint8Array(ciphertextBody.length + tagBytes.length);
   fullCiphertext.set(ciphertextBody, 0);
   fullCiphertext.set(tagBytes, ciphertextBody.length);
 
-  // 4) import key and decrypt
   // importKey accepts ArrayBuffer | ArrayBufferView; pass the Uint8Array directly
   const key = await crypto.subtle.importKey('raw', keyBytes, { name: 'AES-GCM' }, false, ['decrypt']);
 

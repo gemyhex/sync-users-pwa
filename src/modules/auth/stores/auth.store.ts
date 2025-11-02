@@ -3,7 +3,7 @@ import { apiClient } from '@/api/apiClient';
 import { db } from '@/services/indexedDB';
 import { deriveKeyPBKDF2, genSaltB64 } from '@/utils/crypto';
 
-const LOCAL_KEY = 'app_current_user';
+const LOCAL_KEY = 'currentUser';
 
 export const useAuthStore = defineStore('auth', {
     state: () => ({

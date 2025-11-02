@@ -1,5 +1,5 @@
 import { openDB, DBSchema, IDBPDatabase } from "idb";
-import { apiClient } from "@/api/apiClient";
+import { apiClient, ApiResponse } from "@/api/apiClient";
 
 const DB_NAME = "user-sync-db";
 const DB_VERSION = 1;
@@ -68,10 +68,10 @@ export class UserSyncService {
 
       while (page <= MAX_PAGES && allUsers.length < MAX_RECORDS) {
         const endpoint = `/users?page=${page}&size=${PAGE_SIZE}`;
-        const result = await apiClient.getDecrypted<any[]>(endpoint);
+        const result = apiClient.getDecrypted<ApiResponse<any[]>>(endpoint);
         const usersPage = Array.isArray(result)
           ? result
-          : result?.data || [];
+          : (Array.isArray(result?.data) ? result.data : []);
 
         if (!usersPage.length) break;
 

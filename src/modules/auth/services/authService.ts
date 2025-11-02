@@ -2,10 +2,10 @@ import type { ApiClient } from '@/api/apiClient';
 import { apiClient } from '@/api/apiClient';
 import { userSyncService } from '@/services/userSync';
 import { db } from '@/services/indexedDB';
-import bcrypt from 'bcryptjs';
+import * as bcrypt from 'bcryptjs';
 
 export interface Credentials {
-  usernameOrEmail: string;
+  username: string;
   password: string;
 }
 
@@ -15,7 +15,6 @@ export interface AuthUser {
   firstName?: string;
   lastName?: string;
   email?: string;
-  // other fields...
 }
 
 export class AuthService {
@@ -33,29 +32,22 @@ export class AuthService {
    */
   async login(creds: Credentials): Promise<{ user: AuthUser; source: 'online' | 'offline' }> {
     // normalize identifier
-    const identifier = creds.usernameOrEmail.trim();
+    const identifier = creds.username.trim();
 
-    // 1) Attempt online login
     try {
-      // adapt endpoint to your API. Example: POST /auth/login { username, password }
       const res = await this.api.postDecrypted<any>('/auth/login', {
         username: identifier,
         password: creds.password,
       });
 
-      // If API succeeded, it should return user object (or token + user).
-      // adapt according to your backend contract:
       const userFromApi: any = res?.user ?? res;
       if (userFromApi) {
-        // optionally trigger user sync if needed
         try { await userSyncService.fetchAndStoreAllPages?.(); } catch { /* ignore */ }
         return { user: this.adaptUser(userFromApi), source: 'online' };
       }
 
-      // If API returned unexpected response, fall through to offline
       throw new Error('Unexpected login response');
     } catch (onlineErr) {
-      // If online attempt fails due to network or server error -> try offline
       console.warn('[AuthService] Online login failed, trying offline', onlineErr);
     }
 
@@ -89,23 +81,16 @@ export class AuthService {
   }
 
   async logout() {
-    // if API logout endpoint exists, call it; otherwise just clear local session.
-    try {
-      await this.api.postDecrypted('/auth/logout'); // ignore if 404
-    } catch {
-      // ignore network error
-    }
-    // additional local cleanup if required
-    localStorage.removeItem('auth.currentUser');
+    localStorage.removeItem('currentUser');
   }
 
   getCurrentUser(): AuthUser | null {
-    const s = localStorage.getItem('auth.currentUser');
+    const s = localStorage.getItem('currentUser');
     return s ? JSON.parse(s) : null;
   }
 
   setCurrentUser(user: AuthUser) {
-    localStorage.setItem('auth.currentUser', JSON.stringify(user));
+    localStorage.setItem('currentUser', JSON.stringify(user));
   }
 
   private adaptUser(u: any): AuthUser {

@@ -137,7 +137,7 @@ onMounted(async () => {
       userSyncService.setupAutoSync();
     }
     await loadUsers();
-  } catch (err) {
+  } catch (err: any) {
     console.error("[Home] Initial sync failed:", err);
     sync.value.syncError = err?.message || "Failed to sync users.";
   } finally {
