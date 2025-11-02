@@ -25,5 +25,4 @@ export const useUsersStore = defineStore('users', {
   }
 });
 
-// Optional: if some components import useSyncStore, provide alias
 export const useSyncStore = useUsersStore;

@@ -1,4 +1,3 @@
-// src/lib/indexedDB.ts
 export class IndexedDBService {
   private dbName: string;
   private db?: IDBDatabase;

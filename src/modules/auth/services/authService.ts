@@ -51,7 +51,7 @@ export class AuthService {
       console.warn('[AuthService] Online login failed, trying offline', onlineErr);
     }
 
-    // 2) Offline fallback: find credential in local IDB 'users' store
+    // Offline fallback: find credential in local IDB 'users' store
     try {
       // Our db wrapper provides get/getAll; find by email or username
       const users = await db.getAll('users'); // returns array
@@ -105,6 +105,5 @@ export class AuthService {
   }
 }
 
-// default singleton
 export const authService = new AuthService(apiClient);
 export default authService;
