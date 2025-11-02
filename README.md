@@ -51,7 +51,6 @@ A modern **Vue 3 + Vite** frontend application designed for secure authenticatio
 ```bash
 ├── public/
 │   ├── manifest.webmanifest # Web App Manifest file for PWA
-│   ├── sw.js                # Service Worker script
 │   └── vite.svg
 ├── src/
 │   ├── api/
@@ -61,11 +60,8 @@ A modern **Vue 3 + Vite** frontend application designed for secure authenticatio
 │   │   ├── base/
 │   │   │   └── BaseButton.vue   # Simple, presentational UI primitives
 │   │   └── layout/
-│   │       ├── Header.vue       # Application header/navigation
 │   │       ├── SyncModal.vue    # Modal component for synchronization status/actions
 │   │       └── UserList.vue     # Component dedicated to displaying a list of users
-│   ├── composables/         # Reusable logic using Vue Composition API
-│   │   └── useNetworkStatus.ts  # Logic for monitoring online/offline status
 │   ├── modules/
 │   │   └── auth/            # Feature-specific module (e.g., Authentication)
 │   │       └── composables/
@@ -76,19 +72,16 @@ A modern **Vue 3 + Vite** frontend application designed for secure authenticatio
 │   ├── router/
 │   │   └── index.ts         # Vue Router setup, routes, and navigation guards
 │   ├── services/            # Business logic and I/O (IndexedDB, sync, auth)
-│   │   ├── adapters.ts      # Data transformation/mapping logic
 │   │   ├── indexedDB.ts     # Logic for interacting with the IndexedDB
 │   │   ├── userSync.ts      # Core service for handling user data synchronization
 │   │   └── authService.ts   # Logic for making auth-related service calls
 │   ├── stores/              # Pinia state management modules
 │   │   ├── auth.store.ts    # Store for authentication state
 │   │   ├── users.store.ts   # Store for managing user data state
-│   │   └── index.ts         # Pinia setup or export index
 │   ├── types/
 │   │   └── index.ts         # TypeScript global type definitions/interfaces
 │   ├── utils/
 │   │   ├── crypto.ts        # General-purpose cryptographic helper functions
-│   │   └── user.adapter.ts  # Specific utility for transforming user data (may overlap with services/adapters)
 │   ├── App.vue
 │   ├── main.css             # Main/global stylesheet
 │   └── main.ts              # Application entry point (initializes Vue, Pinia, Router)
